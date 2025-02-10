@@ -51,21 +51,21 @@ jobs:
       - name: Build application
         run: npm run build
 
-  deploy:
-    name: Deploy to Development
-    needs: [test, build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_SSH_USERNAME }}
-          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
-          script: |
-           cd ~/personal-template-nestjs-back
-           git fetch origin
-           git checkout dev
-           git pull origin dev
-           chmod +x deploy.sh
-           ./deploy.sh
+  # deploy:
+  #   name: Deploy to Development
+  #   needs: [test, build]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Deploy to Server
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.DEV_HOST }}
+  #         username: ${{ secrets.DEV_SSH_USERNAME }}
+  #         key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+  #         script: |
+  #          cd ~/personal-template-nestjs-back
+  #          git fetch origin
+  #          git checkout dev
+  #          git pull origin dev
+  #          chmod +x deploy.sh
+  #          ./deploy.sh

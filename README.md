@@ -2,9 +2,76 @@
 
 A production-ready NestJS template with best practices, TypeScript, MongoDB, Authentication, Testing, and CI/CD setup.
 
-## Template Features
+## 🚨 Initial Setup
 
-- ⚡️ Production-Ready Architecture
+1. **Environment Setup**
+   ```bash
+   # Copy and configure environment variables
+   cp .env.example .env
+   ```
+
+2. **Configure GitHub Repository Secrets**
+   ```bash
+   # Deployment Secrets
+   PROD_HOST=
+   PROD_SSH_USERNAME=
+   PROD_SSH_PRIVATE_KEY=
+   DEV_HOST=
+   DEV_SSH_USERNAME=
+   DEV_SSH_PRIVATE_KEY=
+   
+   # Environment Secrets
+   TEST_ENV=           # Test environment variables
+   DATABASE_URL=       # Production database URL
+   
+   # Integration Secrets
+   SONAR_TOKEN=        # SonarCloud analysis token
+   GITHUB_TOKEN=       # GitHub access token
+   
+   # Email Secrets (Optional)
+   EMAIL_USER=
+   EMAIL_PASSWORD=
+   ```
+
+3. **Database Setup**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+4. **Start Development**
+   ```bash
+   npm install
+   npm run start:dev
+   ```
+
+## 🎯 Prerequisites
+
+- Node.js (v22+)
+- MongoDB (v4.4+)
+- npm or yarn
+- PM2 (for production)
+
+## 🚀 Quick Start
+
+```bash
+# 1. Create from template
+git clone https://github.com/yourusername/nestjs-template.git my-project
+cd my-project
+
+# 2. Install dependencies
+npm install
+
+# 3. Setup environment
+cp .env.example .env
+
+# 4. Start development server
+npm run start:dev
+```
+
+## ⚡️ Template Features
+
+- 🏗️ Production-Ready Architecture
 - 🔐 JWT Authentication & Authorization
 - 📚 Swagger API Documentation
 - 🗄️ MongoDB with Prisma ORM
@@ -13,6 +80,15 @@ A production-ready NestJS template with best practices, TypeScript, MongoDB, Aut
 - 📊 Monitoring & Logging
 - 🛡️ Security Best Practices
 - 🎯 Input Validation & Error Handling
+
+## Technology Stack
+
+- **Framework**: NestJS
+- **Language**: TypeScript
+- **Database**: MongoDB
+- **Authentication**: JWT
+- **Testing**: Jest
+- **Documentation**: Swagger/OpenAPI
 
 ## Using This Template
 
@@ -39,58 +115,6 @@ cp .env.example .env
 # Update deployment configurations
 - Edit deploy.sh with your app name
 - Update .github/workflows/* with your deployment details
-```
-
-## Technology Stack
-
-- **Framework**: NestJS
-- **Language**: TypeScript
-- **Database**: MongoDB
-- **Authentication**: JWT
-- **Testing**: Jest
-- **Documentation**: Swagger/OpenAPI
-
-## Prerequisites
-
-- Node.js (v22 or higher)
-- MongoDB (v4.4 or higher)
-- npm or yarn
-
-## Quick Start
-
-1. **Clone and Install**
-```bash
-git clone https://github.com/yourusername/personal-template-nestjs-back.git
-cd personal-template-nestjs-back
-npm install
-```
-
-2. **Environment Setup**
-```bash
-cp .env.example .env
-```
-> Note: Ensure you have a MongoDB instance running and the DATABASE_URL environment variable set in your .env file. If you don't, create one or update the variable accordingly.
-
-3. **Post-Installation (Prisma)**
-```bash
-# If you don't have a database set up or your database is empty,
-# push the Prisma schema to initialize MongoDB collections:
-npx prisma db push
-
-# Generate the Prisma Client after pushing the schema or installing dependencies
-npx prisma generate
-```
-> Note: Ensure DATABASE_URL is correctly set in your .env file.
-
-4. **Development**
-```bash
-npm run start:dev
-```
-
-5. **Production Build**
-```bash
-npm run build
-npm run start:prod
 ```
 
 ## Prisma & Schema Updates
@@ -289,8 +313,28 @@ Ensure the following secrets are defined in your CI/CD environment (e.g., GitHub
 - DEV_SSH_USERNAME: SSH username for development deployments.
 - DEV_SSH_PRIVATE_KEY: SSH private key for development deployments.
 - SONAR_TOKEN: Token for SonarCloud analysis.
+- TEST_ENV: Test environment variables.
+- DATABASE_URL: Production database URL.
 
 ## Template Customization
+
+### Module Structure
+```
+src/
+├── modules/           # Feature modules
+│   ├── auth/         # Authentication module
+│   ├── user/         # User management
+│   └── your-module/  # Add your modules here
+```
+
+### Adding New Features
+```bash
+# Generate new module
+nest g module modules/your-module
+
+# Generate CRUD resources
+nest g resource modules/your-module
+```
 
 ### 1. Application Name
 - Update `package.json`
@@ -300,11 +344,8 @@ Ensure the following secrets are defined in your CI/CD environment (e.g., GitHub
 
 ### 2. Environment Configuration
 ```bash
-# Required variables in .env
-DATABASE_URL=
-JWT_SECRET=
-API_PREFIX=
-PORT=
+   # Copy and configure environment variables
+   cp .env.example .env
 ```
 
 ### 3. Module Structure
