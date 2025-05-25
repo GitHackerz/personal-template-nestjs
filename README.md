@@ -140,18 +140,13 @@ src/
 ├── app.module.ts
 ├── core
 │   ├── common
-│   │   ├── filters
 │   │   ├── guards
 │   │   │   └── auth.guard.ts
-│   │   ├── interceptors
-│   │   ├── middleware
-│   │   │   └── logger.middleware.ts
-│   │   └── pipes
+│   │   └── middleware
+│   │       └── logger.middleware.ts
 │   ├── config
 │   │   ├── env.validation.ts
 │   │   └── swagger.config.ts
-│   ├── constants
-│   ├── exceptions
 │   ├── services
 │   │   ├── base.service.ts
 │   │   └── prisma.service.ts
@@ -175,75 +170,6 @@ src/
     └── verify-account.hbs
 ```
 
-## Testing
-
-```bash
-# Unit tests - runs fast unit tests
-npm run test
-
-# Watch mode tests - continuously runs tests on file changes
-npm run test:watch
-
-# Debug tests - enables debug mode for troubleshooting test failures
-npm run test:debug
-
-# End-to-end tests - verifies API endpoints and integrations
-npm run test:e2e
-
-# Test coverage - generates comprehensive coverage reports
-npm run test:cov
-
-# Performance tests - simulates load using k6 performance testing
-npm run test:performance
-
-# Security audit - checks for vulnerabilities in project dependencies
-npm run security:audit
-```
-
-## Testing Strategy
-
-### Unit Tests
-```bash
-npm run test
-```
-- Tests individual components in isolation
-- Located in `*.spec.ts` files next to the implementation
-- Coverage threshold: 80% for all metrics
-
-### Integration Tests
-```bash
-npm run test:e2e
-```
-- Tests API endpoints and service interactions
-- Located in `test/` directory
-- Includes database integration tests
-
-### Performance Tests
-```bash
-npm run test:performance
-```
-- Uses k6 for load testing
-- Tests API endpoints under load
-- Measures response times and error rates
-- Located in `tests/performance/`
-
-### Security Tests
-```bash
-npm run security:audit
-```
-- npm audit for dependency vulnerabilities
-- CodeQL analysis for code security
-- Regular security patches
-
-### Code Quality
-```bash
-npm run lint        # ESLint checks
-npm run quality:sonar  # SonarCloud analysis
-```
-- Enforces coding standards
-- Identifies code smells and bugs
-- Maintains maintainability metrics
-
 ## Development Tools
 
 ### Available Scripts
@@ -252,7 +178,7 @@ npm run start:dev   # Development with hot reload
 npm run start:debug # Debug mode
 npm run start:prod  # Production mode
 npm run build       # Production build
-npm run format      # Format code with Prettier
+npm run lint      # Lint code
 ```
 
 ### API Documentation
@@ -261,9 +187,6 @@ npm run format      # Format code with Prettier
 ## Docker Support
 
 ```bash
-# Build the container
-docker build -t personal-template-nestjs-api .
-
 # Run with Docker Compose
 docker-compose up -d
 ```
@@ -301,20 +224,6 @@ docker-compose up -d
 - Input validation
 - SQL injection protection
 - XSS prevention
-
-## Secrets Configuration
-
-Ensure the following secrets are defined in your CI/CD environment (e.g., GitHub repository settings):
-
-- PROD_HOST: Production server hostname or IP.
-- PROD_SSH_USERNAME: SSH username for production deployments.
-- PROD_SSH_PRIVATE_KEY: SSH private key for production deployments.
-- DEV_HOST: Development server hostname or IP.
-- DEV_SSH_USERNAME: SSH username for development deployments.
-- DEV_SSH_PRIVATE_KEY: SSH private key for development deployments.
-- SONAR_TOKEN: Token for SonarCloud analysis.
-- TEST_ENV: Test environment variables.
-- DATABASE_URL: Production database URL.
 
 ## Template Customization
 
