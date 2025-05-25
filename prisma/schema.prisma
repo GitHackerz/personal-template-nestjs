@@ -3,17 +3,65 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
-  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  id               String    @id @default(uuid())
   email            String    @unique
   name             String
+  username         String    @unique
   password         String
   image            String?
   isVerified       Boolean   @default(false)
   otpCode          String?
   otpCodeExpiresAt DateTime?
+  role             UserRole  @default(USER)
+
+  profile  UserProfile?
+  security UserSecurity?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  id          String    @id @default(uuid())
+  userId      String    @unique
+  bio         String?   @db.Text
+  phoneNumber String?   @db.VarChar(20)
+  dateOfBirth DateTime?
+  gender      String?
+  address     String?
+  country     String?
+  timezone    String?   @default("UTC")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserSecurity {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  isKycVerified    Boolean   @default(false)
+  isBanned         Boolean   @default(false)
+  isTwoFAEnabled   Boolean   @default(false)
+  twoFASecret      String?
+  failedLoginCount Int       @default(0)
+  lastLogin        DateTime?
+  lastLoginIp      String?
+  lockedUntil      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

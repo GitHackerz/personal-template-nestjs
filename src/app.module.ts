@@ -1,68 +1,63 @@
-import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { join } from 'path';
 import { LoggerMiddleware } from './core/common/middleware/logger.middleware';
 import { PrismaService } from './core/services/prisma.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { UserModule } from './modules/user/user.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { CacheService } from './core/services/cache.service';
+import { MailService } from './core/services/mail.service';
+import { JwtModule } from '@nestjs/jwt';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
-    imports: [
-        // Environment Configuration
-        ConfigModule.forRoot({
-            isGlobal: true,
-            cache: true
-        }),
+  imports: [
+    // Environment Configuration
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
+    }),
 
-        // Rate Limiting
-        ThrottlerModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (config: ConfigService) => [
-                {
-                    ttl: config.get('THROTTLE_TTL', 60),
-                    limit: config.get('THROTTLE_LIMIT', 100)
-                }
-            ]
-        }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+      exclude: ['/api*'],
+    }),
 
-        // Email Configuration
-        MailerModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (config: ConfigService) => ({
-                transport: {
-                    host: config.get<string>('EMAIL_HOST'),
-                    port: config.get<number>('EMAIL_PORT'),
-                    secure: false, // Set to true if using SSL (port 465)
-                    auth: {
-                        user: config.get<string>('EMAIL_USER'),
-                        pass: config.get<string>('EMAIL_PASSWORD')
-                    }
-                },
-                defaults: {
-                    from: `"No Reply" <${config.get<string>('EMAIL_FROM')}>`
-                },
-                template: {
-                    dir: join(__dirname, 'templates'),
-                    adapter: new HandlebarsAdapter()
-                }
-            })
-        }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+    }),
 
-        FileUploadModule,
-        AuthModule,
-        UserModule
-    ],
-    controllers: [],
-    providers: [PrismaService]
+    // Rate Limiting
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          ttl: config.get('THROTTLE_TTL', 60),
+          limit: config.get('THROTTLE_LIMIT', 100),
+        },
+      ],
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 600 * 1000, // 10 minutes in milliseconds
+      max: 1000, // Maximum number of items in cache
+    }),
+    FileUploadModule,
+    AuthModule,
+    UserModule,
+  ],
+  controllers: [],
+  providers: [PrismaService, MailService, CacheService],
 })
 export class AppModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoggerMiddleware).forRoutes('*');
-    }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
 }

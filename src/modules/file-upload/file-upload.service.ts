@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 // const ALLOWED_MIME_TYPES = [
@@ -12,43 +13,43 @@ const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 @Injectable()
 export class FileUploadService {
-    private readonly uploadDir = path.join(process.cwd(), 'uploads');
+  private readonly uploadDir = path.join(process.cwd(), 'uploads');
 
-    constructor() {
-        this.ensureUploadDir();
+  constructor() {
+    this.ensureUploadDir();
+  }
+
+  private ensureUploadDir() {
+    if (!fs.existsSync(this.uploadDir)) {
+      fs.mkdirSync(this.uploadDir, { recursive: true });
+    }
+  }
+
+  async handleFileUpload(file: Express.Multer.File) {
+    console.log(file);
+
+    if (!file) {
+      throw new BadRequestException('no file uploaded');
     }
 
-    private ensureUploadDir() {
-        if (!fs.existsSync(this.uploadDir)) {
-            fs.mkdirSync(this.uploadDir, { recursive: true });
-        }
+    // if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+    //   throw new BadRequestException('invalid file type');
+    // }
+
+    if (file.size > MAX_SIZE) {
+      throw new BadRequestException('file is too large!');
     }
 
-    async handleFileUpload(file: Express.Multer.File) {
-        console.log(file);
+    const uniqueFilename = `${Date.now()}-${file.originalname}`;
+    const filePath = path.join(this.uploadDir, uniqueFilename);
 
-        if (!file) {
-            throw new BadRequestException('no file uploaded');
-        }
+    // Write file to disk
+    fs.writeFileSync(filePath, file.buffer);
 
-        // if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-        //   throw new BadRequestException('invalid file type');
-        // }
-
-        if (file.size > MAX_SIZE) {
-            throw new BadRequestException('file is too large!');
-        }
-
-        const uniqueFilename = `${Date.now()}-${file.originalname}`;
-        const filePath = path.join(this.uploadDir, uniqueFilename);
-
-        // Write file to disk
-        fs.writeFileSync(filePath, file.buffer);
-
-        // Return the URL path that can be used to access the file
-        return {
-            filePath: `/uploads/${uniqueFilename}`,
-            filename: uniqueFilename
-        };
-    }
+    // Return the URL path that can be used to access the file
+    return {
+      filePath: `/uploads/${uniqueFilename}`,
+      filename: uniqueFilename,
+    };
+  }
 }

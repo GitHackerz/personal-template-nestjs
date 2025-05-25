@@ -1,10 +1,15 @@
-version: '3.8'
-
 services:
-  api:
-    build:
-      context: .
+  db:
+    image: postgres:16
     ports:
-      - "5000:5000"
+      - "5433:5432"
     environment:
-      - NODE_ENV=development
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+

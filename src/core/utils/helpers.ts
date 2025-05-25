@@ -8,7 +8,7 @@
  * isNullOrUndefined('') // returns false
  */
 export const isNullOrUndefined = (value: any): boolean => {
-    return value === null || value === undefined;
+  return value === null || value === undefined;
 };
 
 /**
@@ -22,11 +22,11 @@ export const isNullOrUndefined = (value: any): boolean => {
  * isEmpty('hello') // returns false
  */
 export const isEmpty = (value: any): boolean => {
-    if (isNullOrUndefined(value)) return true;
-    if (Array.isArray(value)) return value.length === 0;
-    if (typeof value === 'object') return Object.keys(value).length === 0;
-    if (typeof value === 'string') return value.trim().length === 0;
-    return false;
+  if (isNullOrUndefined(value)) return true;
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.keys(value).length === 0;
+  if (typeof value === 'string') return value.trim().length === 0;
+  return false;
 };
 
 /**
@@ -38,12 +38,12 @@ export const isEmpty = (value: any): boolean => {
  * returns { a: 1 }
  */
 export const removeEmptyProperties = <T extends object>(obj: T): Partial<T> => {
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-        if (!isNullOrUndefined(value) && !isEmpty(value)) {
-            acc[key as keyof T] = value;
-        }
-        return acc;
-    }, {} as Partial<T>);
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (!isNullOrUndefined(value) && !isEmpty(value)) {
+      acc[key as keyof T] = value;
+    }
+    return acc;
+  }, {} as Partial<T>);
 };
 
 /**
@@ -54,7 +54,7 @@ export const removeEmptyProperties = <T extends object>(obj: T): Partial<T> => {
  * await sleep(1000) // waits for 1 second
  */
 export const sleep = (ms: number): Promise<void> => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 };
 
 /**
@@ -65,11 +65,11 @@ export const sleep = (ms: number): Promise<void> => {
  * generateRandomString(8) // might return "Ax7Bd9Yz"
  */
 export const generateRandomString = (length: number): string => {
-    const chars =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    return Array.from({ length }, () =>
-        chars.charAt(Math.floor(Math.random() * chars.length))
-    ).join('');
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from({ length }, () =>
+    chars.charAt(Math.floor(Math.random() * chars.length)),
+  ).join('');
 };
 
 /**
@@ -82,11 +82,11 @@ export const generateRandomString = (length: number): string => {
  * tryParseJson('invalid json', {}) // returns {}
  */
 export const tryParseJson = <T>(jsonString: string, defaultValue: T): T => {
-    try {
-        return JSON.parse(jsonString) as T;
-    } catch {
-        return defaultValue;
-    }
+  try {
+    return JSON.parse(jsonString) as T;
+  } catch {
+    return defaultValue;
+  }
 };
 
 /**
@@ -99,14 +99,14 @@ export const tryParseJson = <T>(jsonString: string, defaultValue: T): T => {
  * const debouncedSearch = debounce((query) => searchAPI(query), 300)
  */
 export const debounce = <T extends (...args: any[]) => any>(
-    func: T,
-    wait: number
+  func: T,
+  wait: number,
 ): ((...args: Parameters<T>) => void) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: Parameters<T>) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func(...args), wait);
-    };
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
 };
 
 /**
@@ -118,16 +118,16 @@ export const debounce = <T extends (...args: any[]) => any>(
  * formatFileSize(1234567) // returns "1.18 MB"
  */
 export const formatFileSize = (bytes: number): string => {
-    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    let size = bytes;
-    let unitIndex = 0;
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let size = bytes;
+  let unitIndex = 0;
 
-    while (size >= 1024 && unitIndex < units.length - 1) {
-        size /= 1024;
-        unitIndex++;
-    }
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
 
-    return `${Math.round(size * 100) / 100} ${units[unitIndex]}`;
+  return `${Math.round(size * 100) / 100} ${units[unitIndex]}`;
 };
 
 /**
@@ -139,11 +139,11 @@ export const formatFileSize = (bytes: number): string => {
  * formatDate(new Date()) // returns "Jan 1, 2024"
  */
 export const formatDate = (date: Date, locale = 'en-US'): string => {
-    return new Date(date).toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
+  return new Date(date).toLocaleDateString(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 };
 
 /**
@@ -157,14 +157,14 @@ export const formatDate = (date: Date, locale = 'en-US'): string => {
  *
  */
 export const formatDateTime = (date: Date, locale = 'en-US'): string => {
-    return new Date(date).toLocaleString(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric'
-    });
+  return new Date(date).toLocaleString(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  });
 };
 
 /**
@@ -176,9 +176,9 @@ export const formatDateTime = (date: Date, locale = 'en-US'): string => {
  * chunkArray([1, 2, 3, 4, 5], 2) // returns [[1,2], [3,4], [5]]
  */
 export const chunkArray = <T>(array: T[], size: number): T[][] => {
-    return Array.from({ length: Math.ceil(array.length / size) }, (_, index) =>
-        array.slice(index * size, (index + 1) * size)
-    );
+  return Array.from({ length: Math.ceil(array.length / size) }, (_, index) =>
+    array.slice(index * size, (index + 1) * size),
+  );
 };
 
 /**
@@ -189,10 +189,10 @@ export const chunkArray = <T>(array: T[], size: number): T[][] => {
  * slugify("Hello World!") // returns "hello-world"
  */
 export const slugify = (str: string): string => {
-    return str
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/[\s_-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 };
